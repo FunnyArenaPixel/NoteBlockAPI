@@ -6,7 +6,6 @@ import cn.nukkit.network.protocol.BlockEventPacket;
 import cn.nukkit.network.protocol.DataPacket;
 import cn.nukkit.network.protocol.LevelSoundEventPacket;
 import cn.nukkit.network.protocol.PlaySoundPacket;
-import com.nukkitx.network.raknet.RakNetReliability;
 import com.xxmicloxx.NoteBlockAPI.Song;
 import com.xxmicloxx.NoteBlockAPI.note.Layer;
 import com.xxmicloxx.NoteBlockAPI.note.Note;
@@ -100,7 +99,7 @@ public class StereoSongPlayer extends SongPlayer {
             // not in same world
             return;
         }
-        boolean limit = p.getProtocol() < 388;
+        boolean limit = p.protocol < 388;
 
         List<DataPacket> batchedPackets = new ArrayList<>();
         //byte playerVolume = NoteBlockAPI.getInstance().getPlayerVolume(p);
@@ -122,7 +121,6 @@ public class StereoSongPlayer extends SongPlayer {
                         pk.z = (int) noteBlock.z;
                         pk.eventType = note.getInstrument(limit);
                         pk.eventData = pitch;
-                        pk.tryEncode();
 
                         if (note.getInstrument(false) >= song.getFirstCustomInstrumentIndex()) {
                             PlaySoundPacket psk = new PlaySoundPacket();
@@ -132,9 +130,8 @@ public class StereoSongPlayer extends SongPlayer {
                             psk.z = (int) ((float) p.z);
                             psk.pitch = note.getNoteSoundPitch();
                             psk.volume = (float) l.getVolume() / 100 * ((float) this.getVolume() / 100);
-                            psk.tryEncode();
                             batchedPackets.add(psk);
-                        } else if (p.getProtocol() >= 312 && pitch < 0) {
+                        } else if (p.protocol >= 312 && pitch < 0) {
                             PlaySoundPacket psk = new PlaySoundPacket();
                             psk.name = note.getSoundEnum(limit).getSound();
                             psk.x = (int) noteBlock.x;
@@ -142,7 +139,6 @@ public class StereoSongPlayer extends SongPlayer {
                             psk.z = (int) noteBlock.z;
                             psk.pitch = note.getNoteSoundPitch();
                             psk.volume = (float) l.getVolume() / 100 * ((float) this.getVolume() / 100);
-                            psk.tryEncode();
                             batchedPackets.add(psk);
                         } else {
                             LevelSoundEventPacket pk1 = new LevelSoundEventPacket();
@@ -150,9 +146,8 @@ public class StereoSongPlayer extends SongPlayer {
                             pk1.y = (float) noteBlock.y + 0.5f;
                             pk1.z = (float) noteBlock.z + 0.5f;
                             pk1.sound = LevelSoundEventPacket.SOUND_NOTE;
-                            pk1.extraData = note.getInstrument(limit);
-                            pk1.pitch = pitch;
-                            pk1.tryEncode();
+                            pk1.entityIdentifier = ":";
+                            pk1.extraData = note.getInstrument(limit) << 8 | (pitch & 0xFF);
                             batchedPackets.add(pk1);
                         }
 
@@ -163,7 +158,7 @@ public class StereoSongPlayer extends SongPlayer {
         }
         //p.getLevel().addSound(new MusicBlocksSound(noteBlock, note.getInstrument(), note.getKey()), new Player[]{p});
         for (DataPacket pk: batchedPackets) {
-            p.dataPacket(pk.setReliability(RakNetReliability.UNRELIABLE));
+            p.dataPacket(pk);
         }
         //Server.getInstance().batchPackets(new Player[]{p}, batchedPackets.stream().toArray(DataPacket[]::new), true);
     }

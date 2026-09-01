@@ -1,11 +1,9 @@
 package com.xxmicloxx.NoteBlockAPI.player;
 
 import cn.nukkit.Player;
-import cn.nukkit.Server;
 import cn.nukkit.network.protocol.DataPacket;
 import cn.nukkit.network.protocol.LevelSoundEventPacket;
 import cn.nukkit.network.protocol.PlaySoundPacket;
-import com.nukkitx.network.raknet.RakNetReliability;
 import com.xxmicloxx.NoteBlockAPI.*;
 import com.xxmicloxx.NoteBlockAPI.note.Layer;
 import com.xxmicloxx.NoteBlockAPI.note.Note;
@@ -27,7 +25,7 @@ public class RadioSongPlayer extends SongPlayer {
                 continue;
             }
 
-            boolean limit = p.getProtocol() < 388;
+            boolean limit = p.protocol < 388;
 
             int pitch = note.getKey() - 33;
             if (note.getInstrument(false) >= song.getFirstCustomInstrumentIndex()) {
@@ -38,9 +36,8 @@ public class RadioSongPlayer extends SongPlayer {
                 psk.z = (int) ((float) p.z);
                 psk.pitch = note.getNoteSoundPitch();
                 psk.volume = (float) l.getVolume() / 100 * ((float) this.getVolume() / 100);
-                psk.tryEncode();
                 batchedPackets.add(psk);
-            } else if (p.getProtocol() >= 312 && pitch < 0) {
+            } else if (p.protocol >= 312 && pitch < 0) {
                 PlaySoundPacket psk = new PlaySoundPacket();
                 psk.name = note.getSoundEnum(limit).getSound();
                 psk.x = (int) p.x;
@@ -48,7 +45,6 @@ public class RadioSongPlayer extends SongPlayer {
                 psk.z = (int) p.z;
                 psk.pitch = note.getNoteSoundPitch();
                 psk.volume = (float) l.getVolume() / 100 * ((float) this.getVolume() / 100);
-                psk.tryEncode();
                 batchedPackets.add(psk);
             } else {
                 LevelSoundEventPacket pk = new LevelSoundEventPacket();
@@ -56,16 +52,15 @@ public class RadioSongPlayer extends SongPlayer {
                 pk.y = (float) p.y;
                 pk.z = (float) p.z;
                 pk.sound = LevelSoundEventPacket.SOUND_NOTE;
-                pk.extraData = note.getInstrument(limit);
-                pk.pitch = note.getKey() - 33;
-                pk.tryEncode();
+                pk.entityIdentifier = ":";
+                pk.extraData = note.getInstrument(limit) << 8 | (pitch & 0xFF);
                 batchedPackets.add(pk);
             }
 
         }
 
         for (DataPacket pk: batchedPackets) {
-            p.dataPacket(pk.setReliability(RakNetReliability.UNRELIABLE));
+            p.dataPacket(pk);
         }
         //Server.getInstance().batchPackets(new Player[]{p}, batchedPackets.stream().toArray(DataPacket[]::new), true);
     }

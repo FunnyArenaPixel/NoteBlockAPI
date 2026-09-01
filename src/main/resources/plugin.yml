@@ -10,6 +10,3 @@ website: http://www.fcmcpe.com
 
 description: a developer interface to play nbs-files ingame
 authors: [xxmicloxx, michidk, boybook]
-
-depend:
-- "SynapseAPI"

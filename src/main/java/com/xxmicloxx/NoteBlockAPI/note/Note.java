@@ -1,6 +1,6 @@
 package com.xxmicloxx.NoteBlockAPI.note;
 
-import cn.nukkit.level.sound.SoundEnum;
+import cn.nukkit.level.Sound;
 
 public class Note {
 
@@ -40,42 +40,42 @@ public class Note {
         return instrument;
     }
 
-    public SoundEnum getSoundEnum(boolean limit) {
+    public Sound getSoundEnum(boolean limit) {
         switch (getInstrument(limit)) {
             case 0:
-                return SoundEnum.NOTE_HARP;
+                return Sound.NOTE_HARP;
             case 1:
-                return SoundEnum.NOTE_BD;
+                return Sound.NOTE_BD;
             case 2:
-                return SoundEnum.NOTE_SNARE;
+                return Sound.NOTE_SNARE;
             case 3:
-                return SoundEnum.NOTE_HAT;
+                return Sound.NOTE_HAT;
             case 4:
-                return SoundEnum.NOTE_BASSATTACK;
+                return Sound.NOTE_BASSATTACK;
             case 5:
-                return SoundEnum.NOTE_BELL;
+                return Sound.NOTE_BELL;
             case 6:
-                return SoundEnum.NOTE_FLUTE;
+                return Sound.NOTE_FLUTE;
             case 7:
-                return SoundEnum.NOTE_CHIME;
+                return Sound.NOTE_CHIME;
             case 8:
-                return SoundEnum.NOTE_GUITAR;
+                return Sound.NOTE_GUITAR;
             case 9:
-                return SoundEnum.NOTE_XYLOPHONE;
+                return Sound.NOTE_XYLOPHONE;
             case 10:
-                return SoundEnum.NOTE_IRON_XYLOPHONE;
+                return Sound.NOTE_IRON_XYLOPHONE;
             case 11:
-                return SoundEnum.NOTE_COW_BELL;
+                return Sound.NOTE_COW_BELL;
             case 12:
-                return SoundEnum.NOTE_DIDGERIDOO;
+                return Sound.NOTE_DIDGERIDOO;
             case 13:
-                return SoundEnum.NOTE_BIT;
+                return Sound.NOTE_BIT;
             case 14:
-                return SoundEnum.NOTE_BANJO;
+                return Sound.NOTE_BANJO;
             case 15:
-                return SoundEnum.NOTE_PLING;
+                return Sound.NOTE_PLING;
             default:
-                return SoundEnum.NOTE_HARP;
+                return Sound.NOTE_HARP;
         }
     }
 

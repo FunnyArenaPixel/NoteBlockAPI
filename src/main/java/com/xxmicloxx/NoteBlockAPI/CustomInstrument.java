@@ -1,13 +1,13 @@
 package com.xxmicloxx.NoteBlockAPI;
 
-import cn.nukkit.level.sound.SoundEnum;
+import cn.nukkit.level.Sound;
 
 public class CustomInstrument {
 
     private final byte index;
     private final String name;
     private final String soundFileName;
-    private final SoundEnum sound;
+    private final Sound sound;
 
     /**
      * Creates a CustomInstrument
@@ -20,9 +20,9 @@ public class CustomInstrument {
         this.name = name;
         this.soundFileName = soundFileName.replaceAll(".ogg", "");
         if (this.soundFileName.equalsIgnoreCase("pling")){
-            this.sound = SoundEnum.NOTE_PLING;
+            this.sound = Sound.NOTE_PLING;
         } else {
-            this.sound = SoundEnum.fromName(name);
+            this.sound = Sound.fromName(name);
         }
     }
 
@@ -51,10 +51,10 @@ public class CustomInstrument {
     }
 
     /**
-     * Gets the SoundEnum for this CustomInstrument
-     * @return SoundEnum enum
+     * Gets the Sound for this CustomInstrument
+     * @return Sound enum
      */
-    public SoundEnum getSound() {
+    public Sound getSound() {
         return sound;
     }
 }
